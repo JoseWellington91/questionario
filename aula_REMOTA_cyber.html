@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AULA REMOTA - CYBERSEGURANÇA</title>
+    <style>
+        :root {
+            --hacker-green: #00ff41;
+            --dark-bg: #0d0d0d;
+            --error-red: #ff3e3e;
+            --border-style: 2px solid var(--hacker-green);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--hacker-green);
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        #terminal {
+            width: 90%;
+            max-width: 800px;
+            border: var(--border-style);
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 255, 65, 0.2);
+            background: rgba(0, 0, 0, 0.9);
+        }
+
+        header {
+            text-align: center;
+            border-bottom: var(--border-style);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+        }
+
+        h1 { font-size: 1.5rem; margin: 0; text-transform: uppercase; }
+        h2 { font-size: 1rem; color: #fff; margin: 5px 0; }
+
+        .hidden { display: none; }
+
+        input[type="text"] {
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid var(--hacker-green);
+            color: var(--hacker-green);
+            font-family: inherit;
+            font-size: 1.2rem;
+            width: 100%;
+            outline: none;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: var(--hacker-green);
+            color: black;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 20px;
+            text-transform: uppercase;
+        }
+
+        .btn:hover { background: #008f11; }
+
+        .question { font-size: 1.2rem; margin-bottom: 20px; color: #fff; }
+
+        .option {
+            display: block;
+            border: 1px solid var(--hacker-green);
+            margin: 10px 0;
+            padding: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .option:hover { background: rgba(0, 255, 65, 0.1); }
+
+        #feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-left: 4px solid var(--error-red);
+            background: rgba(255, 62, 62, 0.1);
+        }
+
+        .summary { line-height: 1.6; font-size: 1.1rem; }
+        .highlight { color: #fff; text-shadow: 0 0 5px var(--hacker-green); }
+    </style>
+</head>
+<body>
+
+<div id="terminal">
+    <header>
+        <h1>AULA REMOTA - CURSO CYBERSEGURANÇA - SENAC-DF</h1>
+        <h2>Instrutor: José Wellington</h2>
+    </header>
+
+    <div id="setup-screen">
+        <p>> Inicializando sistema de avaliação...</p>
+        <p>> Digite seu nome para começar:</p>
+        <input type="text" id="user-name" autocomplete="off" autofocus>
+        <button class="btn" onclick="startQuiz()">Iniciar Scan</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div id="question-container">
+            <p id="q-number" style="color: #888;"></p>
+            <div id="q-text" class="question"></div>
+            <div id="options-container"></div>
+            <div id="feedback" class="hidden"></div>
+            <button id="next-btn" class="btn hidden" onclick="loadNextQuestion()">Próxima Questão >></button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <div class="summary">
+            <p class="highlight">RELATÓRIO FINAL DE INTRUSÃO:</p>
+            <p>ALUNO: <span id="res-name" class="highlight"></span></p>
+            <p>DATA/HORA: <span id="res-time"></span></p>
+            <hr style="border: 1px solid var(--hacker-green)">
+            <p>ACERTOS: <span id="res-hits" style="color: var(--hacker-green)"></span></p>
+            <p>ERROS: <span id="res-misses" style="color: var(--error-red)"></span></p>
+            <p>NOTA FINAL: <span id="res-score" class="highlight"></span> / 10</p>
+            <button class="btn" onclick="window.print()">Salvar PDF / Imprimir</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        { q: "Qual o objetivo principal da varredura de rede na fase de reconhecimento?", options: ["Excluir arquivos do servidor", "Identificar hosts ativos e serviços disponíveis", "Criptografar o banco de dados"], correct: 1 },
+        { q: "O que é um 'ativo' em segurança da informação?", options: ["Qualquer software gratuito", "Qualquer componente de hardware ou informação de valor", "Um vírus disfarçado"], correct: 1 },
+        { q: "Em um ataque de força bruta (Brute Force), qual o método utilizado?", options: ["Explorar falhas de hardware", "Tentativa e erro de combinações de credenciais", "Enviar e-mails falsos"], correct: 1 },
+        { q: "O mapeamento de ativos ajuda a:", options: ["Aumentar a velocidade da internet", "Reduzir a superfície de ataque", "Esconder o IP do administrador"], correct: 1 },
+        { q: "O que caracteriza um ataque de 'Dicionário'?", options: ["Uso de uma lista pré-definida de palavras e senhas comuns", "Uso de força física no servidor", "Ataque que traduz o código fonte"], correct: 0 },
+        { q: "No contexto do Nmap, o que significa um host 'Up'?", options: ["O host está infectado", "O host está respondendo a requisições", "O host está desligado"], correct: 1 },
+        { q: "O que é a 'quebra de hash' em ataques de senha?", options: ["Descobrir o texto original a partir de um valor criptográfico", "Aumentar o tamanho da senha", "Dividir a senha em duas partes"], correct: 0 },
+        { q: "Qual técnica o Nmap usa para descobrir o Sistema Operacional?", options: ["Análise da resposta da pilha TCP/IP", "Leitura do manual do fabricante", "Acesso remoto via Desktop"], correct: 0 },
+        { q: "Por que senhas curtas são vulneráveis a ataques de força bruta?", options: ["Porque são difíceis de lembrar", "Porque possuem pouca entropia e menos combinações possíveis", "Porque o servidor as rejeita"], correct: 1 },
+        { q: "O que é uma varredura do tipo 'Stealth'?", options: ["Uma varredura extremamente rápida", "Uma varredura que tenta evitar a detecção por firewalls/IDS", "Uma varredura feita via satélite"], correct: 1 },
+        { q: "Qual o principal risco de realizar varreduras sem autorização?", options: ["Melhorar o desempenho da rede", "Implicações legais e éticas", "Perda de garantia do computador"], correct: 1 },
+        { q: "O que é 'Salting' em armazenamento de senhas?", options: ["Adicionar dados aleatórios antes do hash para dificultar quebras", "Limpar o banco de dados", "Criptografar o teclado do usuário"], correct: 0 },
+        { q: "Identificar portas abertas é importante porque:", options: ["Indica possíveis pontos de entrada para um invasor", "Melhora o sinal do Wi-Fi", "Aumenta o espaço de armazenamento"], correct: 0 },
+        { q: "Qual a diferença entre Brute Force e Credential Stuffing?", options: ["Não há diferença", "Credential Stuffing usa logins vazados de outros sites", "Brute Force é apenas para redes Wi-Fi"], correct: 1 },
+        { q: "O mapeamento de ativos deve ser feito com qual frequência?", options: ["Apenas uma vez na vida", "Continuamente, para detectar novos dispositivos na rede", "Somente após sofrer um ataque"], correct: 1 }
+    ];
+
+    let currentQuestion = 0;
+    let score = { hits: 0, misses: 0 };
+    let userData = { name: "", startTime: "" };
+
+    function startQuiz() {
+        const nameInput = document.getElementById('user-name').value;
+        if (!nameInput) return alert("Por favor, identifique-se.");
+        
+        userData.name = nameInput;
+        userData.startTime = new Date().toLocaleString();
+        
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('q-number').innerText = `QUESTÃO ${currentQuestion + 1} de ${questions.length}`;
+        document.getElementById('q-text').innerText = q.q;
+        
+        const optionsDiv = document.getElementById('options-container');
+        optionsDiv.innerHTML = "";
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+
+        q.options.forEach((opt, index) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerText = opt;
+            div.onclick = () => checkAnswer(index);
+            optionsDiv.appendChild(div);
+        });
+    }
+
+    function checkAnswer(choice) {
+        const q = questions[currentQuestion];
+        const feedback = document.getElementById('feedback');
+        const options = document.querySelectorAll('.option');
+
+        // Desabilita cliques
+        options.forEach(opt => opt.style.pointerEvents = 'none');
+
+        if (choice === q.correct) {
+            score.hits++;
+            feedback.innerHTML = "CORRETO. Acesso permitido.";
+            feedback.style.borderLeftColor = "var(--hacker-green)";
+            feedback.style.color = "var(--hacker-green)";
+        } else {
+            score.misses++;
+            feedback.innerHTML = `ALERTA: Resposta Errada. <br>A resposta correta era: <strong>${q.options[q.correct]}</strong>`;
+            feedback.style.borderLeftColor = "var(--error-red)";
+            feedback.style.color = "var(--error-red)";
+        }
+
+        feedback.classList.remove('hidden');
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function loadNextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+
+        document.getElementById('res-name').innerText = userData.name;
+        document.getElementById('res-time').innerText = userData.startTime;
+        document.getElementById('res-hits').innerText = score.hits;
+        document.getElementById('res-misses').innerText = score.misses;
+        
+        const finalGrade = ((score.hits / questions.length) * 10).toFixed(1);
+        document.getElementById('res-score').innerText = finalGrade;
+    }
+</script>
+
+</body>
+</html>
