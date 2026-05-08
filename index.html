@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AULA REMOTA - CYBERSEGURANÇA - UC2</title>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cyber-purple: #8A2BE2; /* Azul violeta */
+            --cyber-blue: #00FFFF;   /* Ciano elétrico */
+            --cyber-green: #00FF00;  /* Verde neon */
+            --cyber-red: #FF0000;    /* Vermelho de alerta */
+            --dark-bg: #0A0A0A;      /* Fundo quase preto */
+            --light-gray: #BBBBBB;   /* Texto secundário */
+            --text-color: #EEEEEE;   /* Texto principal */
+            --border-glow: 2px solid var(--cyber-blue);
+            --shadow-glow: 0 0 15px rgba(0, 255, 255, 0.5);
+            --error-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
+        }
+
+        body {
+            background-color: var(--dark-bg);
+            color: var(--text-color);
+            font-family: 'Roboto Mono', monospace;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+            font-size: 16px;
+            line-height: 1.6;
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+        }
+
+        #terminal {
+            width: 90%;
+            max-width: 900px;
+            border: var(--border-glow);
+            padding: 30px;
+            box-shadow: var(--shadow-glow);
+            background: rgba(15, 15, 15, 0.95);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #terminal::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(rgba(0,255,255,0.05), rgba(0,255,255,0.01));
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        header {
+            text-align: center;
+            border-bottom: var(--border-glow);
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.2rem;
+            margin: 0;
+            text-transform: uppercase;
+            color: var(--cyber-blue);
+            text-shadow: 0 0 10px var(--cyber-blue), 0 0 20px var(--cyber-blue);
+        }
+        h2 {
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.9rem;
+            color: var(--cyber-green);
+            margin: 10px 0 0;
+            text-shadow: 0 0 8px var(--cyber-green);
+        }
+
+        .hidden { display: none; }
+
+        input[type="text"] {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--cyber-green);
+            border-radius: 4px;
+            color: var(--cyber-green);
+            font-family: 'Roboto Mono', monospace;
+            font-size: 1.1rem;
+            width: calc(100% - 22px);
+            padding: 10px;
+            outline: none;
+            margin-top: 20px;
+            box-shadow: inset 0 0 5px rgba(0, 255, 0, 0.3);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus {
+            border-color: var(--cyber-blue);
+            box-shadow: inset 0 0 8px rgba(0, 255, 255, 0.5);
+        }
+
+        .btn {
+            background: var(--cyber-blue);
+            color: var(--dark-bg);
+            border: none;
+            padding: 12px 25px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 25px;
+            text-transform: uppercase;
+            font-family: 'Press Start 2P', cursive;
+            font-size: 0.8rem;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            transition: background 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--cyber-green);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            color: var(--text-color);
+            text-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+        }
+
+        .option {
+            display: block;
+            border: 1px solid var(--cyber-purple);
+            background: rgba(50, 0, 100, 0.3);
+            margin: 12px 0;
+            padding: 15px;
+            cursor: pointer;
+            transition: 0.3s ease-in-out;
+            border-radius: 4px;
+            box-shadow: 0 0 8px rgba(138, 43, 226, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .option:hover {
+            background: rgba(0, 255, 255, 0.15);
+            border-color: var(--cyber-blue);
+            box-shadow: 0 0 12px rgba(0, 255, 255, 0.6);
+        }
+
+        .option.correct-answer {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: var(--cyber-green);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+        }
+
+        .option.wrong-answer {
+            background: rgba(255, 0, 0, 0.2);
+            border-color: var(--cyber-red);
+            box-shadow: 0 0 15px rgba(255, 0, 0, 0.7);
+        }
+
+        #feedback {
+            margin-top: 20px;
+            padding: 15px;
+            border-left: 5px solid var(--cyber-red);
+            background: rgba(255, 0, 0, 0.15);
+            color: var(--cyber-red);
+            font-size: 1.1rem;
+            border-radius: 4px;
+            box-shadow: var(--error-shadow);
+            position: relative;
+            z-index: 1;
+        }
+
+        #feedback.correct {
+            border-left-color: var(--cyber-green);
+            background: rgba(0, 255, 0, 0.15);
+            color: var(--cyber-green);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.5);
+        }
+
+        .summary {
+            line-height: 1.8;
+            font-size: 1.2rem;
+            position: relative;
+            z-index: 1;
+        }
+        .summary p {
+            margin-bottom: 10px;
+        }
+        .highlight {
+            color: var(--cyber-blue);
+            text-shadow: 0 0 8px var(--cyber-blue);
+        }
+        .score-hits { color: var(--cyber-green); text-shadow: 0 0 8px var(--cyber-green); }
+        .score-misses { color: var(--cyber-red); text-shadow: 0 0 8px var(--cyber-red); }
+
+        #q-number {
+            color: var(--light-gray);
+            font-size: 0.9rem;
+            margin-bottom: 15px;
+            text-align: right;
+            position: relative;
+            z-index: 1;
+        }
+
+        @media (max-width: 600px) {
+            #terminal {
+                padding: 20px;
+            }
+            h1 { font-size: 1.5rem; }
+            h2 { font-size: 0.7rem; }
+            .question-text { font-size: 1.1rem; }
+            .option { padding: 10px; font-size: 0.9rem; }
+            .btn { padding: 10px 15px; font-size: 0.7rem; }
+            .summary { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="terminal">
+    <header>
+        <h1>AULA REMOTA - CURSO CYBERSEGURANÇA - UC2</h1>
+        <h2>Instrutor: José Wellington</h2>
+    </header>
+
+    <div id="setup-screen">
+        <p>> Inicializando sistema de avaliação...</p>
+        <p>> Digite seu nome para começar:</p>
+        <input type="text" id="user-name" autocomplete="off" autofocus>
+        <button class="btn" onclick="startQuiz()">Iniciar Scan</button>
+    </div>
+
+    <div id="quiz-screen" class="hidden">
+        <div id="question-container">
+            <p id="q-number"></p>
+            <div id="q-text" class="question-text"></div>
+            <div id="options-container"></div>
+            <div id="feedback" class="hidden"></div>
+            <button id="next-btn" class="btn hidden" onclick="loadNextQuestion()">Próxima Questão >></button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden">
+        <div class="summary">
+            <p class="highlight">RELATÓRIO FINAL DE INTRUSÃO:</p>
+            <p>ALUNO: <span id="res-name" class="highlight"></span></p>
+            <p>DATA/HORA: <span id="res-time"></span></p>
+            <hr style="border: 1px solid var(--cyber-blue); margin: 20px 0;">
+            <p>ACERTOS: <span id="res-hits" class="score-hits"></span></p>
+            <p>ERROS: <span id="res-misses" class="score-misses"></span></p>
+            <p>NOTA FINAL: <span id="res-score" class="highlight"></span> / 10</p>
+            <button class="btn" onclick="window.print()">Salvar PDF / Imprimir</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        // Questões sobre Aula 12: Introdução a Exploits e Vulnerabilidades
+        { q: "Qual o principal objetivo de um *exploit*?", options: ["Corrigir uma vulnerabilidade em um sistema.", "Aproveitar uma vulnerabilidade para causar um comportamento inesperado ou acesso não autorizado.", "Monitorar o tráfego de rede para detectar anomalias."], correct: 1 },
+        { q: "O que significa a sigla CVE no contexto de segurança cibernética?", options: ["Common Vulnerability Exposure.", "Critical Vulnerability Exploitation.", "Common Vulnerabilities and Exposures."], correct: 2 },
+        { q: "Qual a importância do *patching* (gerenciamento de patches) para a segurança de sistemas?", options: ["Aumentar a velocidade de processamento do sistema.", "Corrigir falhas de segurança conhecidas e vulnerabilidades.", "Alterar a interface gráfica do usuário."], correct: 1 },
+        { q: "O que é o Metasploit Framework?", options: ["Uma ferramenta para criar firewalls.", "Uma plataforma para desenvolver, testar e executar exploits.", "Um sistema de monitoramento de rede."], correct: 1 },
+        { q: "Qual a fase do ciclo de vida de uma vulnerabilidade que envolve a divulgação pública da falha?", options: ["Descoberta.", "Exploração.", "Divulgação."], correct: 2 },
+        { q: "Um *zero-day exploit* é uma vulnerabilidade:", options: ["Que foi corrigida há mais de um ano.", "Que é conhecida e já possui patch disponível.", "Que é desconhecida pelos desenvolvedores e não possui patch disponível."], correct: 2 },
+        { q: "Qual o principal risco de não aplicar patches de segurança regularmente?", options: ["Diminuição da performance do hardware.", "Exposição a ataques que exploram vulnerabilidades conhecidas.", "Aumento do consumo de energia."], correct: 1 },
+        { q: "O que é um *payload* no contexto de um exploit?", options: ["O código que entrega o exploit ao alvo.", "A ação maliciosa que o exploit executa após o sucesso da exploração.", "O sistema operacional do alvo."], correct: 1 },
+
+        // Questões sobre Aula 13: Segurança em Aplicações Web e OWASP Top 10
+        { q: "Qual o principal objetivo do OWASP Top 10?", options: ["Listar as 10 maiores empresas de segurança web.", "Conscientizar sobre os 10 riscos de segurança mais críticos em aplicações web.", "Fornecer um ranking dos 10 melhores firewalls para web."], correct: 1 },
+        { q: "O que é uma vulnerabilidade de SQL Injection?", options: ["Injeção de código JavaScript malicioso em páginas web.", "Manipulação de consultas SQL para acessar ou modificar dados não autorizados.", "Ataque que sobrecarrega o servidor web com muitas requisições."], correct: 1 },
+        { q: "Qual o tipo de ataque web que permite a injeção de scripts maliciosos no navegador de outros usuários?", options: ["SQL Injection.", "Cross-Site Request Forgery (CSRF).", "Cross-Site Scripting (XSS)."], correct: 2 },
+        { q: "Uma falha de *Broken Authentication* pode levar a qual tipo de problema?", options: ["Aumento da velocidade de carregamento da página.", "Comprometimento de contas de usuários e sessões.", "Melhoria na criptografia de dados."], correct: 1 },
+        { q: "O que é *IDOR (Insecure Direct Object Reference)*?", options: ["Uma falha que permite o acesso direto a objetos internos sem verificação de autorização.", "Um tipo de ataque de negação de serviço.", "Uma técnica de otimização de banco de dados."], correct: 0 },
+        { q: "Qual das seguintes opções é um exemplo de *Security Misconfiguration*?", options: ["Utilizar senhas fortes e únicas para cada serviço.", "Manter serviços desnecessários habilitados e configurações padrão de fábrica.", "Aplicar patches de segurança regularmente."], correct: 1 },
+        { q: "Qual ferramenta é comumente utilizada para testes de segurança em aplicações web, atuando como um proxy interceptador?", options: ["Nmap.", "Wireshark.", "Burp Suite / OWASP ZAP."], correct: 2 }
+    ];
+
+    let currentQuestion = 0;
+    let score = { hits: 0, misses: 0 };
+    let userData = { name: "", startTime: "" };
+
+    function startQuiz() {
+        const nameInput = document.getElementById('user-name').value;
+        if (!nameInput) return alert("Por favor, identifique-se.");
+        
+        userData.name = nameInput;
+        userData.startTime = new Date().toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+        
+        document.getElementById('setup-screen').classList.add('hidden');
+        document.getElementById('quiz-screen').classList.remove('hidden');
+        showQuestion();
+    }
+
+    function showQuestion() {
+        const q = questions[currentQuestion];
+        document.getElementById('q-number').innerText = `QUESTÃO ${currentQuestion + 1} de ${questions.length}`;
+        document.getElementById('q-text').innerHTML = q.q; // Use innerHTML para renderizar *exploit* em itálico
+        
+        const optionsDiv = document.getElementById('options-container');
+        optionsDiv.innerHTML = "";
+        document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+
+        q.options.forEach((opt, index) => {
+            const div = document.createElement('div');
+            div.className = 'option';
+            div.innerHTML = opt; // Use innerHTML para renderizar *exploit* em itálico
+            div.onclick = () => checkAnswer(index, div);
+            optionsDiv.appendChild(div);
+        });
+    }
+
+    function checkAnswer(choice, selectedOptionDiv) {
+        const q = questions[currentQuestion];
+        const feedback = document.getElementById('feedback');
+        const options = document.querySelectorAll('.option');
+
+        // Desabilita cliques
+        options.forEach(opt => opt.style.pointerEvents = 'none');
+
+        if (choice === q.correct) {
+            score.hits++;
+            feedback.innerHTML = "CORRETO. Acesso permitido.";
+            feedback.classList.remove('wrong');
+            feedback.classList.add('correct');
+            selectedOptionDiv.classList.add('correct-answer');
+        } else {
+            score.misses++;
+            feedback.innerHTML = `ALERTA: Resposta Errada. <br>A resposta correta era: <strong>${q.options[q.correct]}</strong>`;
+            feedback.classList.remove('correct');
+            feedback.classList.add('wrong');
+            selectedOptionDiv.classList.add('wrong-answer');
+            // Opcional: destacar a resposta correta
+            options[q.correct].classList.add('correct-answer');
+        }
+
+        feedback.classList.remove('hidden');
+        document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function loadNextQuestion() {
+        currentQuestion++;
+        if (currentQuestion < questions.length) {
+            showQuestion();
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('quiz-screen').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+
+        document.getElementById('res-name').innerText = userData.name;
+        document.getElementById('res-time').innerText = userData.startTime;
+        document.getElementById('res-hits').innerText = score.hits;
+        document.getElementById('res-misses').innerText = score.misses;
+        
+        const finalGrade = ((score.hits / questions.length) * 10).toFixed(1);
+        document.getElementById('res-score').innerText = finalGrade;
+    }
+</script>
+
+</body>
+</html>
