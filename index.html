@@ -252,13 +252,26 @@
     function showResult() {
         document.getElementById('quiz-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('res-name').innerText = userName.toUpperCase();
-        document.getElementById('res-time').innerText = new Date().toLocaleString();
-        document.getElementById('res-hits').innerText = score;
-        document.getElementById('res-misses').innerText = questions.length - score;
-        const finalScore = (score / questions.length) * 10;
-        document.getElementById('res-score').innerText = finalScore.toFixed(1) * 10;
-        document.getElementById('res-status').innerText = finalScore >= 7 ? "APROVADO - SISTEMA INTEGRADO" : "REPROVADO - NECESSÁRIO REBOOT TEÓRICO";
+        
+        // Preenchimento dos dados com verificação de segurança
+        const resName = document.getElementById('res-name');
+        const resTime = document.getElementById('res-time');
+        const resHits = document.getElementById('res-hits');
+        const resMisses = document.getElementById('res-misses');
+        const resScore = document.getElementById('res-score');
+        const resStatus = document.getElementById('res-status');
+
+        if (resName) resName.innerText = userName.toUpperCase();
+        if (resTime) resTime.innerText = new Date().toLocaleString();
+        if (resHits) resHits.innerText = score;
+        if (resMisses) resMisses.innerText = questions.length - score;
+        
+        const percentage = (score / questions.length) * 100;
+        if (resScore) resScore.innerText = percentage.toFixed(0);
+        
+        if (resStatus) {
+            resStatus.innerText = (score / questions.length * 10) >= 7 ? "APROVADO - SISTEMA INTEGRADO" : "REPROVADO - NECESSÁRIO REBOOT TEÓRICO";
+        }
     }
 </script>
 </body>
