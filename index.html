@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVALIAÇÃO TÉCNICA - CYBERSEGURANÇA - UC3</title>
+    <title>PROTOCOLO DE ACESSO - SEGURANÇA CIBERNÉTICA - UC5</title>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -123,25 +123,28 @@
 
         .summary { font-size: 1.2rem; }
         .highlight { color: var(--cyber-blue); }
+        
+        .pagination { text-align: right; color: var(--light-gray); margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div id="terminal">
     <header>
-        <h1>AVALIAÇÃO TÉCNICA - UC3</h1>
-        <h2>Sistemas Operacionais e Serviços de Rede</h2>
+        <h1>⚡ PROTOCOLO DE ACESSO ⚡</h1>
+        <h2>> FUNDAMENTOS DE SEGURANÇA CIBERNÉTICA <<</h2>
     </header>
 
     <div id="setup-screen">
-        <p>> Estabelecendo conexão com o servidor de avaliação...</p>
-        <p>> Digite sua identificação (Nome Completo):</p>
+        <p>> [SISTEMA] Estabelecendo conexão segura...</p>
+        <p>> [ACESSO] Aguardando identificação do operador...</p>
+        <p>> [INPUT] Digite sua identificação (Nome Completo):</p>
         <input type="text" id="user-name" autocomplete="off" autofocus>
-        <button class="btn" onclick="startQuiz()">Iniciar Protocolo</button>
+        <button class="btn" onclick="startQuiz()">[ INICIAR PROTOCOLO ]</button>
     </div>
 
     <div id="quiz-screen" class="hidden">
-        <p id="q-number" style="text-align: right; color: var(--light-gray);"></p>
+        <p class="pagination" id="q-number"></p>
         <div id="q-text" class="question-text"></div>
         <div id="options-container"></div>
         <div id="feedback" class="hidden"></div>
@@ -150,40 +153,35 @@
 
     <div id="result-screen" class="hidden">
         <div class="summary">
-            <p class="highlight">LOG DE FINALIZAÇÃO DO SISTEMA:</p>
-            <p>OPERADOR: <span id="res-name" class="highlight"></span></p>
-            <p>STATUS: <span id="res-status"></span></p>
+            <p class="highlight">>> LOG DE FINALIZAÇÃO DO SISTEMA <<<</p>
+            <p>⚡ OPERADOR: <span id="res-name" class="highlight"></span></p>
+            <p>⚡ STATUS: <span id="res-status"></span></p>
             <hr style="border: 1px solid var(--cyber-blue); margin: 20px 0;">
-            <p>ACERTOS: <span id="res-hits" style="color: var(--cyber-green)"></span></p>
-            <p>ERROS: <span id="res-misses" style="color: var(--cyber-red)"></span></p>
-            <p>PERFORMANCE: <span id="res-score" class="highlight"></span>%</p>
-            <button class="btn" onclick="window.print()">Gerar Relatório (PDF)</button>
+            <p>✓ ACERTOS: <span id="res-hits" style="color: var(--cyber-green)"></span></p>
+            <p>✗ ERROS: <span id="res-misses" style="color: var(--cyber-red)"></span></p>
+            <p>⚡ PERFORMANCE: <span id="res-score" class="highlight"></span>%</p>
+            <button class="btn" onclick="window.print()">[ GERAR RELATÓRIO PDF ]</button>
         </div>
     </div>
 </div>
 
 <script>
     const questions = [
-        { q: "Qual a principal vantagem da virtualização de servidores em ambientes corporativos?", options: ["Aumentar o consumo de hardware físico.", "Consolidação de servidores e otimização de recursos.", "Eliminar a necessidade de sistemas operacionais."], correct: 1 },
-        { q: "No Proxmox/KVM, o que caracteriza um Hypervisor do Tipo 1?", options: ["Roda sobre um sistema operacional convencional (ex: Windows).", "Roda diretamente no hardware (Bare-metal).", "É um software de emulação de jogos."], correct: 1 },
-        { q: "Qual o comando utilizado no Debian para atualizar a lista de repositórios?", options: ["apt upgrade", "apt update", "apt install"], correct: 1 },
-        { q: "Qual diretório do Linux armazena os arquivos de configuração do sistema?", options: ["/home", "/var", "/etc"], correct: 2 },
-        { q: "O que significa a sigla DORA no processo do DHCP?", options: ["Discover, Offer, Request, Acknowledge", "Data, Output, Read, Access", "Direct, Open, Remote, Active"], correct: 0 },
-        { q: "Qual a função do registro 'PTR' em um servidor DNS?", options: ["Apontar um nome para um endereço IP.", "Realizar a resolução reversa (IP para Nome).", "Definir o servidor de e-mail do domínio."], correct: 1 },
-        { q: "No Samba 4, qual o comando utilizado para provisionar um novo domínio AD DC?", options: ["samba-tool domain provision", "smbclient -L localhost", "apt install samba"], correct: 0 },
-        { q: "Qual o principal arquivo de configuração do serviço Samba?", options: ["/etc/samba/samba.conf", "/etc/samba/smb.conf", "/etc/default/samba"], correct: 1 },
-        { q: "O Kerberos é um componente essencial do Samba AD DC. Qual sua função principal?", options: ["Serviço de arquivos.", "Protocolo de autenticação segura baseada em tickets.", "Resolução de nomes NetBIOS."], correct: 1 },
-        { q: "Qual comando é usado para verificar o status de um serviço no sistema via systemd?", options: ["service status name", "systemctl status name", "ps aux | grep name"], correct: 1 },
-        { q: "No Nginx, onde geralmente ficam os arquivos de configuração dos sites ativos?", options: ["/etc/nginx/sites-available/", "/etc/nginx/sites-enabled/", "/var/www/html/"], correct: 1 },
-        { q: "Qual a porta padrão utilizada pelo protocolo HTTP?", options: ["443", "22", "80"], correct: 2 },
-        { q: "O MariaDB é um fork de qual banco de dados famoso?", options: ["PostgreSQL", "Oracle", "MySQL"], correct: 2 },
-        { q: "Qual comando SQL é usado para criar um novo banco de dados no MariaDB?", options: ["NEW DATABASE nome;", "CREATE DATABASE nome;", "ADD DATABASE nome;"], correct: 1 },
-        { q: "O que é um 'Server Block' no contexto do Nginx?", options: ["Um erro de servidor 500.", "Uma configuração para hospedar múltiplos sites no mesmo servidor.", "Um firewall integrado ao Nginx."], correct: 1 },
-        { q: "Qual a função do arquivo /etc/resolv.conf no Linux?", options: ["Configurar o endereço IP da interface.", "Configurar os servidores DNS que o sistema deve consultar.", "Configurar as rotas estáticas."], correct: 1 },
-        { q: "No ISC DHCP Server, qual opção define o gateway padrão que será enviado aos clientes?", options: ["option routers", "option domain-name-servers", "default-lease-time"], correct: 0 },
-        { q: "Qual comando torna um arquivo imutável no Linux (evitando edições acidentais)?", options: ["chmod 444", "chown root", "chattr +i"], correct: 2 },
-        { q: "O que é o 'samba-tool'?", options: ["Uma ferramenta gráfica para Windows.", "A interface de linha de comando principal para administrar o Samba AD DC.", "Um editor de texto para arquivos .conf"], correct: 1 },
-        { q: "Qual o comando para reiniciar o serviço Nginx após uma alteração de configuração?", options: ["systemctl start nginx", "systemctl reload nginx ou restart nginx", "nginx -stop"], correct: 1 }
+        { q: "Qual é a definição de segurança cibernética?", options: ["Um software antivírus que protege apenas computadores pessoais.", "Um conjunto de práticas para proteger sistemas, redes e dados contra ataques digitais.", "Uma política de senhas forte para todos os usuários."], correct: 1 },
+        { q: "O que representa a letra 'C' na Tríade CIA?", options: ["Criptografia", "Confidencialidade", "Conformidade"], correct: 1 },
+        { q: "Qual é o objetivo da Confidencialidade?", options: ["Garantir que as informações sejam acessíveis apenas por pessoas autorizadas.", "Garantir que os sistemas estejam sempre online.", "Garantir que os dados não sejam alterados."], correct: 0 },
+        { q: "O que é Integridade em segurança da informação?", options: ["A capacidade de criptografar dados sensíveis.", "A garantia de que as informações permaneçam precisas e não sejam alteradas por partes não autorizadas.", "A capacidade de fazer backup de dados regularmente."], correct: 1 },
+        { q: "O que é Disponibilidade?", options: ["A garantia de que os sistemas e dados estejam acessíveis quando necessário por usuários autorizados.", "A capacidade de proteger dados com senhas fortes.", "A quantidade de usuários que podem acessar um sistema simultaneamente."], correct: 0 },
+        { q: "O que é uma Vulnerabilidade?", options: ["Uma fraqueza em um sistema que pode ser explorada por uma ameaça.", "Um ataque bem-sucedido a um sistema.", "Uma política de segurança implementada corretamente."], correct: 0 },
+        { q: "O que é uma Ameaça em segurança cibernética?", options: ["Qualquer potencial perigo que pode explorar uma vulnerabilidade.", "Um software antivírus instalado no computador.", "Uma senha forte criada por um usuário."], correct: 0 },
+        { q: "Como é calculado o Risco em segurança?", options: ["Risco = Probabilidade + Impacto", "Risco = Probabilidade x Impacto", "Risco = Impacto / Probabilidade"], correct: 1 },
+        { q: "O que é um Ativo em segurança da informação?", options: ["Qualquer item de valor para a organização que precisa ser protegido.", "Um ataque bem-sucedido a um sistema.", "Uma vulnerabilidade em um software."], correct: 0 },
+        { q: "O que caracteriza um White Hat Hacker?", options: ["Explorar vulnerabilidades para ganho pessoal ou roubo de dados.", "Usar suas habilidades para identificar vulnerabilidades com permissão e melhorar a segurança.", "Atuar em uma área cinzenta, sem intenção maliciosa inicial."], correct: 1 },
+        { q: "Qual é a principal diferença entre Black Hat e Grey Hat Hackers?", options: ["Black Hat tem intenção maliciosa; Grey Hat atua em uma área cinzenta sem intenção maliciosa inicial.", "Ambos têm as mesmas motivações e objetivos.", "Grey Hat é mais perigoso que Black Hat."], correct: 0 },
+        { q: "O que é Hacktivismo?", options: ["Exploração de vulnerabilidades para ganho financeiro.", "Uso de técnicas de hacking para promover causas políticas, sociais ou ideológicas.", "Identificação de vulnerabilidades com permissão."], correct: 1 },
+        { q: "Qual das seguintes opções é um exemplo de ameaça cibernética?", options: ["Firewall configurado corretamente.", "Ataque DDoS para derrubar um servidor.", "Criptografia de dados."], correct: 1 },
+        { q: "Qual é o objetivo principal da Gestão de Riscos?", options: ["Eliminar todos os riscos completamente.", "Identificar, avaliar e mitigar os riscos a níveis aceitáveis.", "Ignorar os riscos e focar apenas em proteção."], correct: 1 },
+        { q: "Qual das seguintes medidas garante a Integridade dos dados?", options: ["Criptografia de dados.", "Controle de acesso baseado em permissões.", "Hashing e Assinaturas Digitais."], correct: 2 }
     ];
 
     let currentQuestion = 0;
@@ -253,16 +251,13 @@
         document.getElementById('quiz-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         
-        // Preenchimento dos dados com verificação de segurança
         const resName = document.getElementById('res-name');
-        const resTime = document.getElementById('res-time');
         const resHits = document.getElementById('res-hits');
         const resMisses = document.getElementById('res-misses');
         const resScore = document.getElementById('res-score');
         const resStatus = document.getElementById('res-status');
 
         if (resName) resName.innerText = userName.toUpperCase();
-        if (resTime) resTime.innerText = new Date().toLocaleString();
         if (resHits) resHits.innerText = score;
         if (resMisses) resMisses.innerText = questions.length - score;
         
@@ -270,7 +265,7 @@
         if (resScore) resScore.innerText = percentage.toFixed(0);
         
         if (resStatus) {
-            resStatus.innerText = (score / questions.length * 10) >= 7 ? "APROVADO - SISTEMA INTEGRADO" : "REPROVADO - NECESSÁRIO REBOOT TEÓRICO";
+            resStatus.innerText = (score / questions.length * 10) >= 7 ? "✓ ACESSO CONCEDIDO - SISTEMA INTEGRADO" : "✗ ACESSO NEGADO - NECESSÁRIO REBOOT TEÓRICO";
         }
     }
 </script>
